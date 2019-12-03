@@ -13,6 +13,7 @@ gem "autoprefixer-rails"
 gem "bootsnap", require: false
 gem "bourbon", ">= 5.0.1"
 gem "delayed_job_active_record"
+gem "figaro"
 gem "high_voltage"
 gem "honeybadger"
 gem "inline_svg"

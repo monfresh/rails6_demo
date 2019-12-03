@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV["RACK_MINI_PROFILER"].to_i > 0
+if Rails.env.development? && Figaro.env.rack_mini_profiler == "on"
   require "rack-mini-profiler"
 
   Rack::MiniProfilerRails.initialize!(Rails.application)
