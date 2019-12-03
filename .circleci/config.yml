@@ -13,6 +13,7 @@ jobs:
           PGHOST: localhost
           PGUSER: rails6_demo
           COVERAGE: true
+          CC_TEST_REPORTER_ID: c382ee85283841cf905b93d6b30462024ab07be78a56157770e644a92144605d
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -36,6 +37,13 @@ jobs:
           command: |
             gem install bundler:2.0.2
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
+
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
       - save-cache:
           key: v1-rails6_demo-bundle-{{ checksum "Gemfile.lock" }}
           paths:
@@ -68,7 +76,14 @@ jobs:
           name: Run Tests
           command: |
             mkdir /tmp/test-results
-            bin/rake
+            ./cc-test-reporter before-build
+            bundle exec rspec --format progress
+
+      - run:
+          name: Upload Test Results to Code Climate
+          command: |
+            ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
+            ./cc-test-reporter upload-coverage
 
       # collect reports
       - store_test_results:
