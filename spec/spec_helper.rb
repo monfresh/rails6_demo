@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if ENV.fetch("COVERAGE", false)
   require "simplecov"
 
@@ -6,7 +8,7 @@ if ENV.fetch("COVERAGE", false)
     SimpleCov.coverage_dir(dir)
   end
 
-SimpleCov.start "rails"
+  SimpleCov.start "rails"
 end
 
 require "webmock/rspec"

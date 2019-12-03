@@ -1,0 +1,57 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  Exclude:
+    - "db/migrate/*"
+    - "db/schema.rb"
+    - "vendor/**/*"
+    - "./.simplecov"
+    - "node_modules/**/*"
+  TargetRailsVersion: 5.2
+  TargetRubyVersion: 2.6
+  UseCache: true
+
+Bundler/OrderedGems:
+  Enabled: true
+  TreatCommentsAsGroupSeparators: false
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Enabled: true
+  Max: 25
+  ExcludedMethods:
+    - 'Struct.new'
+  Exclude:
+    - "config/environments/*.rb"
+    - "config/initializers/simple_form"
+    - "config/routes.rb"
+    - "spec/**/*.rb"
+
+Metrics/LineLength:
+  Max: 120
+  Exclude:
+    - "config/initializers/simple_form.rb"
+
+Metrics/MethodLength:
+  Max: 10
+  Exclude:
+    - "spec/**/*"
+
+Naming/RescuedExceptionsVariableName:
+  Description: "Use consistent rescued exceptions variables naming."
+  Enabled: true
+  PreferredName: error
+
+Rails/FilePath:
+  EnforcedStyle: "slashes"
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
