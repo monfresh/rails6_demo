@@ -54,7 +54,7 @@ gem 'high_voltage'
 gem 'bourbon', '>= 5.0.1'
 gem 'neat', '>= 3.0.1'
 gem 'spring-commands-rspec', group: :development
-gem 'rspec-rails', '~> 3.6', group: [:development, :test]
+gem 'rspec-rails', '~> 4.0.0.beta3', group: [:development, :test]
 gem 'shoulda-matchers', group: :test
 gem 'capybara-selenium', group: :test
 gem 'webdrivers', group: :test
