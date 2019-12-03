@@ -1,0 +1,73 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # Specify the Ruby version you desire here
+      - image: circleci/ruby:2.6.3-node-browsers
+        environment:
+          RAILS_ENV: test
+          POSTGRES_HOST: localhost
+          COVERAGE: true
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: circleci
+
+    working_directory: ~/rails6_demo
+
+    steps:
+      - checkout
+
+      - restore-cache:
+          keys:
+            - v1-rails6_demo-bundle-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
+      - save-cache:
+          key: v1-rails6_demo-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - restore-cache:
+          keys:
+            - v1-rails6_demo-yarn-{{ checksum "yarn.lock" }}
+            - v1-rails6_demo-yarn-
+      - run:
+          name: Install Yarn
+          command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
+      - save-cache:
+          key: v1-rails6_demo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Test Setup
+          command: |
+            bundle exec rake db:setup --trace
+            bundle exec rake assets:precompile
+
+      - run:
+          name: Run Tests
+          command: |
+            mkdir /tmp/test-results
+            bin/rake
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
