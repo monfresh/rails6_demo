@@ -6,6 +6,9 @@
 # Exit if any subcommand fails
 set -e
 
+echo "== Copying application.yml =="
+test -L config/application.yml || cp config/application.yml.default config/application.yml
+
 # Set up Ruby dependencies via Bundler
 gem install bundler --conservative
 gem install foreman
